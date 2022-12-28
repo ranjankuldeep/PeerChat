@@ -17,12 +17,25 @@ const servers = {
   ],
 };
 let createOffer = async () => {
-  peerConnection = new RTCPeerConnection(servers);
+  var peerConnection = new RTCPeerConnection(servers);
   //An object providing options to configure the new connection
+  localStream
+    .getTracks()
+    .forEach((track) => peerConnection.addTrack(track, localStream));
 
+  peerConnection.ontrack = (event) => {
+    event.streams[0]
+      .getTracks()
+      .forEach((track) => remoteStream.addTrack(track));
+  };
   remoteStream = new MediaStream();
   document.getElementById("user-2").srcObject = remoteStream;
 
+  peerConnection.onicecandidate = async (event) => {
+    if (event.candidate) {
+      console.log(event.candidate);
+    }
+  };
   let offer = await peerConnection.createOffer();
   await peerConnection.setLocalDescription(offer);
 

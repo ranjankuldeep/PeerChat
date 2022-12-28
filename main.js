@@ -9,8 +9,16 @@ let init = async () => {
   document.getElementById("user-1").srcObject = localStream;
   createOffer();
 };
+const servers = {
+  iceServers: [
+    {
+      urls: ["stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"],
+    },
+  ],
+};
 let createOffer = async () => {
-  peerConnection = new RTCPeerConnection();
+  peerConnection = new RTCPeerConnection(servers);
+  //An object providing options to configure the new connection
 
   remoteStream = new MediaStream();
   document.getElementById("user-2").srcObject = remoteStream;
